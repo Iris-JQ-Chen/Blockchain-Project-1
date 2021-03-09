@@ -39,7 +39,7 @@ y^2=x^3+7y
 
 // const bitcoin = require('bitcoinjs-lib');
 // let keyPair = bitcoin.ECPair.makeRandom();
-// // 打印私钥
+// // 打印私钥:
 // console.log('private key = ' + keyPair.d);
 // // 以十六进制打印:
 // console.log('hex = ' + keyPair.d.toHex());
@@ -47,6 +47,20 @@ y^2=x^3+7y
 // console.log('hex = ' + keyPair.d.toHex(32));
 
 const bitcoin = require('bitcoinjs-lib');
-let keyPair = bitcoin.ECPair.makeRandom();
-//打印秘钥
-console.log('private key = '+keyPair.d);
+const wif = require('wif');
+const BigInteger = require('bigi');
+
+// // 十六进制表示的私钥:
+// let privateKey = '0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d';
+// // 对私钥编码:
+// let encoded = wif.encode(0x80,Buffer.from(privateKey,'hex'),false);//非压缩格式
+// console.log(encoded);
+// encoded = wif.encode(0x80,Buffer.from(privateKey,'hex'),true);//压缩格式
+// console.log(encoded);
+
+let
+    priv = '0c28fca386c7a227600b2fe50b7cae11ec86d3bf1fbe471be89827e19d72aa1d',
+    d = BigInteger.fromBuffer(Buffer.from(priv, 'hex')),
+    keyPair = new bitcoin.ECPair(d);
+// 打印WIF格式的私钥:
+console.log(keyPair.toWIF());

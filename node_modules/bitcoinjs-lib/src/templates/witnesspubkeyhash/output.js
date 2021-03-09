@@ -1,17 +1,33 @@
-'use strict';
 // OP_0 {pubKeyHash}
-Object.defineProperty(exports, '__esModule', { value: true });
-const bscript = require('../../script');
-const script_1 = require('../../script');
-function check(script) {
-  const buffer = bscript.compile(script);
-  return (
-    buffer.length === 22 &&
-    buffer[0] === script_1.OPS.OP_0 &&
+
+var bscript = require('../../script')
+var types = require('../../types')
+var typeforce = require('typeforce')
+var OPS = require('bitcoin-ops')
+
+function check (script) {
+  var buffer = bscript.compile(script)
+
+  return buffer.length === 22 &&
+    buffer[0] === OPS.OP_0 &&
     buffer[1] === 0x14
-  );
 }
-exports.check = check;
-check.toJSON = () => {
-  return 'Witness pubKeyHash output';
-};
+check.toJSON = function () { return 'Witness pubKeyHash output' }
+
+function encode (pubKeyHash) {
+  typeforce(types.Hash160bit, pubKeyHash)
+
+  return bscript.compile([OPS.OP_0, pubKeyHash])
+}
+
+function decode (buffer) {
+  typeforce(check, buffer)
+
+  return buffer.slice(2)
+}
+
+module.exports = {
+  check: check,
+  decode: decode,
+  encode: encode
+}
